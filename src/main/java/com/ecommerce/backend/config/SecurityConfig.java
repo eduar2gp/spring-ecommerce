@@ -65,6 +65,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                       // 1. Explicitly permit OPTIONS requests globally for CORS preflight checks
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Allow POST to the custom login endpoint to get the token
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
 
@@ -72,6 +74,7 @@ public class SecurityConfig {
                         // POST/PUT/DELETE require ADMIN role
 //                        .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/providers/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
 
