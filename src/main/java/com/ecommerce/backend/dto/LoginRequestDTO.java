@@ -3,7 +3,7 @@ package com.ecommerce.backend.dto;
 import jakarta.validation.constraints.NotBlank;
 
 // Used to capture username and password from the POST /api/v1/auth/login request body
-public class LoginRequest {
+public class LoginRequestDTO {
 
     @NotBlank
     private String username;

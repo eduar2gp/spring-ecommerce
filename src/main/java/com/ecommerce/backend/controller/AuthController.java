@@ -1,6 +1,6 @@
 package com.ecommerce.backend.controller;
 
-import com.ecommerce.backend.dto.LoginRequest;
+import com.ecommerce.backend.dto.LoginRequestDTO;
 import com.ecommerce.backend.security.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,16 +32,16 @@ public class AuthController {
      * POST /api/v1/auth/login : Authenticates user and returns a JWT token.
      */
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateAndGetToken(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateAndGetToken(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
         try {
             // 1. Attempt to authenticate the user using the AuthenticationManager
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword())
             );
 
             if (authentication.isAuthenticated()) {
                 // 2. If authenticated, generate the JWT token
-                String token = jwtService.generateToken(loginRequest.getUsername());
+                String token = jwtService.generateToken(loginRequestDTO.getUsername());
 
                 // 3. Return the token in the response body
                 // In a real app, you might use a dedicated LoginResponse DTO.
