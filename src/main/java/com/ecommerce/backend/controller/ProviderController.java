@@ -126,7 +126,7 @@ public class ProviderController {
     }
 
     @PostMapping("/{id}/image")
-    public ResponseEntity<ProviderResponseDTO> uploadProfileImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ProviderResponseDTO> updateProviderImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         // 1. Check if the Provider exists
         Provider provider = providerRepository.findById(id)
                 .orElse(null);
