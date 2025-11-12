@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Allow POST to the custom login endpoint to get the token
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/google/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
 
                         // --- Product Controller Authorization Rules ---
