@@ -1,11 +1,8 @@
 package com.ecommerce.backend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
 /**
  * JPA Entity representing the 'product' table in the PostgreSQL database.
@@ -13,6 +10,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "product")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
 
     @Id
@@ -36,19 +34,32 @@ public class Product {
     @Column(name = "product_image_url")
     private String productImageUrl;
 
-    // --- Constructors ---
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "provider_id", nullable = false)
+    @JsonIgnore
+    private Provider provider;
+
     public Product() {
     }
 
-    public Product(String name, String description, int price, Integer stockQuantity, String productImageUrl) {
+    public Product(Long id, String name, String description, int price, Integer stockQuantity, String productImageUrl, Provider provider) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.productImageUrl = productImageUrl;
+        this.provider = provider;
+    }
+    // --- Getters and Setters ---
+
+    public Provider getProvider() {
+        return provider;
     }
 
-    // --- Getters and Setters ---
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
 
     public Long getId() {
         return id;

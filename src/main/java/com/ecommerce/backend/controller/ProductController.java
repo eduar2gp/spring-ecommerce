@@ -1,5 +1,7 @@
 package com.ecommerce.backend.controller;
 
+import com.ecommerce.backend.dto.ProductResponseDTO;
+import com.ecommerce.backend.mapper.ProductMapper;
 import com.ecommerce.backend.model.Product;
 import com.ecommerce.backend.repository.ProductRepository;
 import com.ecommerce.backend.service.FileStorageService;
@@ -11,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST Controller for managing Product entities.
@@ -21,11 +24,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
     private final FileStorageService fileStorageService;
 
-    // Dependency injection via constructor (recommended practice)
-    public ProductController(ProductRepository productRepository, FileStorageService fileStorageService) {
+    public ProductController(ProductRepository productRepository, ProductMapper productMapper, FileStorageService fileStorageService) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
         this.fileStorageService = fileStorageService;
     }
 
@@ -45,6 +49,25 @@ public class ProductController {
         return productRepository.findById(id)
                 .map(ResponseEntity::ok) // Return 200 OK with product body
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Return 404 Not Found
+    }
+
+    /**
+     * GET /api/v1/products/by-provider/{providerId} : Retrieve a list of products by Provider ID
+     */
+    @GetMapping("/by-provider/{providerId}")
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByProviderId(@PathVariable Long providerId) {
+        // 1. Retrieve the entities
+        List<Product> products = productRepository.findByProviderId(providerId);
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        } else {
+            // 2. Map the entities to DTOs
+            List<ProductResponseDTO> dtos = products.stream()
+                    .map(productMapper::toDto) // 🔑 Use the mapper to convert each entity
+                    .collect(Collectors.toList());
+            // 3. Return 200 OK with the list of DTOs
+            return ResponseEntity.ok(dtos);
+        }
     }
 
     /**

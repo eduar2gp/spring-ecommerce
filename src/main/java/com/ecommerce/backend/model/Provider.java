@@ -1,10 +1,13 @@
 package com.ecommerce.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "provider")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Provider {
 
     @Id
@@ -25,17 +28,13 @@ public class Provider {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
-    // --- FOREIGN KEY MAPPING ---
-    // Establishes a Many-to-One relationship with the AppUser entity.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false) // 'user_id' is the foreign key column in the 'provider' table
+    @JsonIgnore
     private User user;
-    // ---------------------------
-
-    // --- Constructors ---
 
     public Provider() {
-        // Default constructor required by JPA
+
     }
 
     public Provider(String name, String email, String phone, User user,  String profileImageUrl) {
@@ -46,7 +45,7 @@ public class Provider {
         this.profileImageUrl = profileImageUrl;
     }
 
-    // --- Getters and Setters ---
+
 
     public Long getId() {
         return id;
@@ -112,7 +111,6 @@ public class Provider {
         return Objects.hash(id);
     }
 
-    // --- ToString for logging/debugging (optional) ---
 
     @Override
     public String toString() {
