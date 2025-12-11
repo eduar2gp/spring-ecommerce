@@ -9,6 +9,8 @@ public class ProductResponseDTO {
     private String description;
     private int price;
     private String productImageUrl;
+    private int stockQuantity;
+
 
     public ProductResponseDTO() {
     }
@@ -19,6 +21,15 @@ public class ProductResponseDTO {
         this.description = product.getDescription();
         this.price = product.getPrice();
         this.productImageUrl = product.getProductImageUrl();
+        this.stockQuantity = product.getStockQuantity();
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public Long getId() {

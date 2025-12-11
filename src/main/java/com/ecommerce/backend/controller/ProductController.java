@@ -1,10 +1,12 @@
 package com.ecommerce.backend.controller;
 
+import com.ecommerce.backend.dto.ProductRequestDTO;
 import com.ecommerce.backend.dto.ProductResponseDTO;
 import com.ecommerce.backend.mapper.ProductMapper;
 import com.ecommerce.backend.model.Product;
 import com.ecommerce.backend.repository.ProductRepository;
 import com.ecommerce.backend.service.FileStorageService;
+import com.ecommerce.backend.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +27,13 @@ public class ProductController {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ProductService productService;
     private final FileStorageService fileStorageService;
 
-    public ProductController(ProductRepository productRepository, ProductMapper productMapper, FileStorageService fileStorageService) {
+    public ProductController(ProductRepository productRepository, ProductMapper productMapper, ProductService productService, FileStorageService fileStorageService) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.productService = productService;
         this.fileStorageService = fileStorageService;
     }
 
@@ -75,9 +79,11 @@ public class ProductController {
      * @Valid triggers the validation constraints defined in the Product model.
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // Return 201 Created on success
-    public Product createProduct(@Valid @RequestBody Product product) {
-        return productRepository.save(product);
+    public ResponseEntity<Product> createProduct(@RequestBody ProductRequestDTO dto) {
+        Product savedProduct = productService.createProductFromDTO(dto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(savedProduct);
     }
 
     /**
