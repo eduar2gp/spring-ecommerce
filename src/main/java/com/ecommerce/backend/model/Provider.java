@@ -28,24 +28,15 @@ public class Provider {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false) // 'user_id' is the foreign key column in the 'provider' table
-    @JsonIgnore
-    private User user;
-
     public Provider() {
-
     }
 
-    public Provider(String name, String email, String phone, User user,  String profileImageUrl) {
+    public Provider(String name, String email, String phone, String profileImageUrl) {
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.user = user;
         this.profileImageUrl = profileImageUrl;
     }
-
-
 
     public Long getId() {
         return id;
@@ -77,14 +68,6 @@ public class Provider {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public User getAppUser() {
-        return user;
-    }
-
-    public void setAppUser(User appUser) {
-        this.user = appUser;
     }
 
     public String getProfileImageUrl() {
@@ -119,7 +102,6 @@ public class Provider {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", userId=" + (user != null ? user.getId() : "null") +
                 '}';
     }
 }

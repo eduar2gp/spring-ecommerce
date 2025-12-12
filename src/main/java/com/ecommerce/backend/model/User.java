@@ -17,6 +17,9 @@ public class User {
     @Column(nullable = false)
     private String password; // This will store the BCrypt HASH
 
+    @Column(name = "provider_id")
+    private Long providerId;
+
     @ManyToMany(fetch = FetchType.EAGER) // Fetch roles immediately
     @JoinTable(
             name = "user_role",
@@ -35,6 +38,14 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public Long getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(Long providerId) {
+        this.providerId = providerId;
+    }
 
     public Set<Role> getRoles() { return roles; }
     public void setRoles(Set<Role> roles) { this.roles = roles; }

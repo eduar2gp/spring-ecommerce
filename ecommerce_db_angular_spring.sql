@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict tNASxjyhGWmxdCfa3rtBFCMJPbfWxfnaKFpzlIHy2WngBZhMgLZmcqemu4B6ZSt
+\restrict 6siiiqHNqGfReuhdz7b6pbE99nYDQRuHlhAcQYRj4QKrizb7WW59gbvX14lYMro
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
 
--- Started on 2025-12-09 18:05:53
+-- Started on 2025-12-12 00:44:29
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -33,7 +33,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.app_user (
     id bigint NOT NULL,
     username character varying(255) NOT NULL,
-    password character varying(255) NOT NULL
+    password character varying(255) NOT NULL,
+    provider_id bigint
 );
 
 
@@ -56,7 +57,7 @@ CREATE SEQUENCE public.app_user_id_seq
 ALTER SEQUENCE public.app_user_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5082 (class 0 OID 0)
+-- TOC entry 5081 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: app_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -94,7 +95,7 @@ CREATE SEQUENCE public.category_id_seq
 ALTER SEQUENCE public.category_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5083 (class 0 OID 0)
+-- TOC entry 5082 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -114,7 +115,7 @@ CREATE TABLE public.product (
     price integer NOT NULL,
     stock_quantity integer NOT NULL,
     product_image_url character varying(255),
-    provider_id bigint
+    provider_id bigint NOT NULL
 );
 
 
@@ -149,7 +150,7 @@ CREATE SEQUENCE public.product_id_seq
 ALTER SEQUENCE public.product_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5084 (class 0 OID 0)
+-- TOC entry 5083 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: product_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -167,8 +168,7 @@ CREATE TABLE public.provider (
     name character varying(255) NOT NULL,
     email character varying(255),
     phone character varying(255),
-    profile_image_url character varying(255),
-    user_id bigint NOT NULL
+    profile_image_url character varying(255)
 );
 
 
@@ -190,7 +190,7 @@ CREATE SEQUENCE public.provider_id_seq
 ALTER SEQUENCE public.provider_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5085 (class 0 OID 0)
+-- TOC entry 5084 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: provider_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -228,7 +228,7 @@ CREATE SEQUENCE public.role_id_seq
 ALTER SEQUENCE public.role_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5086 (class 0 OID 0)
+-- TOC entry 5085 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -308,7 +308,7 @@ ALTER TABLE ONLY public.app_user
 
 
 --
--- TOC entry 4907 (class 2606 OID 40966)
+-- TOC entry 4906 (class 2606 OID 40966)
 -- Name: category category_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -317,7 +317,7 @@ ALTER TABLE ONLY public.category
 
 
 --
--- TOC entry 4909 (class 2606 OID 40970)
+-- TOC entry 4908 (class 2606 OID 40970)
 -- Name: category category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -326,7 +326,7 @@ ALTER TABLE ONLY public.category
 
 
 --
--- TOC entry 4911 (class 2606 OID 40977)
+-- TOC entry 4910 (class 2606 OID 40977)
 -- Name: product_category product_category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -344,7 +344,7 @@ ALTER TABLE ONLY public.product
 
 
 --
--- TOC entry 4905 (class 2606 OID 32779)
+-- TOC entry 4904 (class 2606 OID 32779)
 -- Name: provider provider_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -396,15 +396,7 @@ CREATE INDEX idx_product_provider_id ON public.product USING btree (provider_id)
 
 
 --
--- TOC entry 4903 (class 1259 OID 32785)
--- Name: idx_provider_user_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_provider_user_id ON public.provider USING btree (user_id);
-
-
---
--- TOC entry 4916 (class 2606 OID 40983)
+-- TOC entry 4915 (class 2606 OID 40983)
 -- Name: product_category fk_product_category_category; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -413,7 +405,7 @@ ALTER TABLE ONLY public.product_category
 
 
 --
--- TOC entry 4917 (class 2606 OID 40978)
+-- TOC entry 4916 (class 2606 OID 40978)
 -- Name: product_category fk_product_category_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -422,7 +414,7 @@ ALTER TABLE ONLY public.product_category
 
 
 --
--- TOC entry 4912 (class 2606 OID 40988)
+-- TOC entry 4911 (class 2606 OID 40988)
 -- Name: product fk_product_provider; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -431,12 +423,12 @@ ALTER TABLE ONLY public.product
 
 
 --
--- TOC entry 4915 (class 2606 OID 32780)
--- Name: provider fk_provider_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 4912 (class 2606 OID 41001)
+-- Name: app_user fk_provider; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.provider
-    ADD CONSTRAINT fk_provider_user FOREIGN KEY (user_id) REFERENCES public.app_user(id) ON DELETE RESTRICT;
+ALTER TABLE ONLY public.app_user
+    ADD CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES public.provider(id);
 
 
 --
@@ -457,11 +449,11 @@ ALTER TABLE ONLY public.user_role
     ADD CONSTRAINT user_role_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.app_user(id) ON DELETE CASCADE;
 
 
--- Completed on 2025-12-09 18:05:53
+-- Completed on 2025-12-12 00:44:29
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict tNASxjyhGWmxdCfa3rtBFCMJPbfWxfnaKFpzlIHy2WngBZhMgLZmcqemu4B6ZSt
+\unrestrict 6siiiqHNqGfReuhdz7b6pbE99nYDQRuHlhAcQYRj4QKrizb7WW59gbvX14lYMro
 

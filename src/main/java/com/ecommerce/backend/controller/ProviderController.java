@@ -36,19 +36,11 @@ public class ProviderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProviderResponseDTO createProvider(@Valid @RequestBody ProviderRequestDTO providerDto) {
-        // 1. Fetch the required User entity using the ID from the DTO
-        User user = userRepository.findById(providerDto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + providerDto.getUserId()));
-
-        // 2. Map the DTO to the JPA Entity, setting the retrieved User object
         Provider provider = new Provider();
         provider.setName(providerDto.getName());
         provider.setEmail(providerDto.getEmail());
-        provider.setAppUser(user); // Here we set the actual User object
         provider.setPhone(providerDto.getPhone());
-
         Provider savedProvider = providerRepository.save(provider);
-        // Map the saved entity to the response DTO
         return new ProviderResponseDTO(savedProvider);
     }
 

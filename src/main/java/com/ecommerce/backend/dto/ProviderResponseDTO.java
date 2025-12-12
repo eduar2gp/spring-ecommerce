@@ -16,8 +16,6 @@ public class ProviderResponseDTO {
     private String phone;
     private String profileImageUrl;
 
-    // Return only the ID of the associated User, not the full User object.
-    private Long userId;
 
     // --- Constructors ---
 
@@ -34,15 +32,6 @@ public class ProviderResponseDTO {
         this.email = provider.getEmail();
         this.phone = provider.getPhone();
         this.profileImageUrl = provider.getProfileImageUrl();
-
-        // Safely extract the User ID. If appUser is null or a proxy is used,
-        // we assume the ID is accessible, or use null if the User object is not present.
-        if (provider.getAppUser() != null) {
-            this.userId = provider.getAppUser().getId();
-        } else {
-            // This case should ideally not happen if 'user_id' is NOT NULL in the database
-            this.userId = null;
-        }
     }
 
     // --- Getters and Setters ---
@@ -87,11 +76,4 @@ public class ProviderResponseDTO {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 }
